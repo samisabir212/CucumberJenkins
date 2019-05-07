@@ -47,7 +47,7 @@ public class StepDefinitions {
 	@Given("^i read a cell from a test data sheet using jenkins Build Parameters$")
 	public void readExcelSheetThroughJenkinsBuildParameters() throws IOException {
 
-		String excelFilePath = "/Users/sami/eclipse-workspace/JenkinsCucumber/src/resources/java/testdata/TestData.xlsx";
+		String excelFilePath = "/src/resources/java/testdata/TestData.xlsx";
 
 		String value = Lib.readexcelvalue(1, 1, excelFilePath);
 
