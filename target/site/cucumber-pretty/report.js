@@ -29,7 +29,7 @@ formatter.match({
   "location": "StepDefinitions.createFoldlerAndWriteToExcel()"
 });
 formatter.result({
-  "duration": 641792521,
+  "duration": 660416898,
   "status": "passed"
 });
 });
