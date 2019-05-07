@@ -43,7 +43,7 @@ public class StepDefinitions {
 	public void readExcelSheetThroughJenkins() throws IOException {
 		
 		
-		String excelFilePath = "/Users/sami/Desktop/Automation/sidrissi/CucumberJenkins/Properties/TestData.xlsx";
+		String excelFilePath = "/Users/sami/eclipse-workspace/JenkinsCucumber/src/resources/java/testdata/TestData.xlsx";
 		
 		String value = Lib.readexcelvalue(1, 1,excelFilePath);
 		

@@ -1,35 +1,35 @@
-$(document).ready(function() {var formatter = new CucumberHTML.DOMFormatter($('.cucumber-report'));formatter.uri("CreateResultsFolder.feature");
+$(document).ready(function() {var formatter = new CucumberHTML.DOMFormatter($('.cucumber-report'));formatter.uri("ReadExcelSheet.feature");
 formatter.feature({
   "line": 2,
-  "name": "create Results folder and write to excel",
-  "description": "\nbasically i want to create a folder, read and write to excel\nbecause im havin issues with Jenkins \nim getting permission denied",
-  "id": "create-results-folder-and-write-to-excel",
+  "name": "read excel sheet using jenkins",
+  "description": "",
+  "id": "read-excel-sheet-using-jenkins",
   "keyword": "Feature",
   "tags": [
     {
       "line": 1,
-      "name": "@excel"
+      "name": "@ReadExcel"
     }
   ]
 });
 formatter.scenario({
-  "line": 8,
-  "name": "create folder write to excel",
+  "line": 5,
+  "name": "read excel sheet from jenkins and git",
   "description": "",
-  "id": "create-results-folder-and-write-to-excel;create-folder-write-to-excel",
+  "id": "read-excel-sheet-using-jenkins;read-excel-sheet-from-jenkins-and-git",
   "type": "scenario",
   "keyword": "Scenario"
 });
 formatter.step({
-  "line": 10,
-  "name": "i create a results folder and write to excel",
+  "line": 7,
+  "name": "i read a cell from a test data sheet",
   "keyword": "Given "
 });
 formatter.match({
-  "location": "StepDefinitions.createFoldlerAndWriteToExcel()"
+  "location": "StepDefinitions.readExcelSheetThroughJenkins()"
 });
 formatter.result({
-  "duration": 660416898,
+  "duration": 461713388,
   "status": "passed"
 });
 });
