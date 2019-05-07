@@ -35,7 +35,7 @@ formatter.match({
   "location": "StepDefinitions.createFoldlerAndWriteToExcel_InsideProject()"
 });
 formatter.result({
-  "duration": 597049131,
+  "duration": 695852456,
   "status": "passed"
 });
 });

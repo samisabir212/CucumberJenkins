@@ -41,7 +41,22 @@ public class StepDefinitions {
 		System.out.println("excelValue : " + value);
 
 	}
+	
+	
+	
+	@Given("^i read a cell from a test data sheet using jenkins Build Parameters$")
+	public void readExcelSheetThroughJenkinsBuildParameters() throws IOException {
 
+		String excelFilePath = "/Users/sami/eclipse-workspace/JenkinsCucumber/src/resources/java/testdata/TestData.xlsx";
+
+		String value = Lib.readexcelvalue(1, 1, excelFilePath);
+
+		System.out.println("excelValue : " + value);
+
+	}
+	
+	
+	
 	// i create a results folder and write to excel inside project
 	@Given("^i create a results folder and write to excel inside project$")
 	public void createFoldlerAndWriteToExcel_InsideProject() throws IOException {
