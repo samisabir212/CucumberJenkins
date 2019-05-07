@@ -1,41 +1,36 @@
-$(document).ready(function() {var formatter = new CucumberHTML.DOMFormatter($('.cucumber-report'));formatter.uri("CreateResultsFolder.feature");
+$(document).ready(function() {var formatter = new CucumberHTML.DOMFormatter($('.cucumber-report'));formatter.uri("ReadExcelSheet.feature");
 formatter.feature({
-  "line": 2,
-  "name": "create Results folder and write to excel",
-  "description": "\nbasically i want to create a folder, read and write to excel\nbecause im havin issues with Jenkins \nim getting permission denied\nyou will get access denied when you try to access directories in your machine\nbut this time i will try to do it inside the project",
-  "id": "create-results-folder-and-write-to-excel",
-  "keyword": "Feature",
-  "tags": [
-    {
-      "line": 1,
-      "name": "@excel"
-    }
-  ]
+  "line": 1,
+  "name": "read excel sheet using jenkins",
+  "description": "",
+  "id": "read-excel-sheet-using-jenkins",
+  "keyword": "Feature"
 });
 formatter.scenario({
-  "line": 17,
-  "name": "create folder write to excel inside the project",
+  "line": 9,
+  "name": "read excel sheet from jenkins and git",
   "description": "",
-  "id": "create-results-folder-and-write-to-excel;create-folder-write-to-excel-inside-the-project",
+  "id": "read-excel-sheet-using-jenkins;read-excel-sheet-from-jenkins-and-git",
   "type": "scenario",
   "keyword": "Scenario",
   "tags": [
     {
-      "line": 16,
-      "name": "@insideProject"
+      "line": 8,
+      "name": "@BuildParameters"
     }
   ]
 });
 formatter.step({
-  "line": 19,
-  "name": "i create a results folder and write to excel inside project",
+  "line": 11,
+  "name": "i read a cell from a test data sheet using jenkins Build Parameters",
   "keyword": "Given "
 });
 formatter.match({
-  "location": "StepDefinitions.createFoldlerAndWriteToExcel_InsideProject()"
+  "location": "StepDefinitions.readExcelSheetThroughJenkinsBuildParameters()"
 });
 formatter.result({
-  "duration": 695852456,
-  "status": "passed"
+  "duration": 588145293,
+  "error_message": "java.lang.NullPointerException\n\tat Lib.Lib.readexcelvalue(Lib.java:666)\n\tat Steps.StepDefinitions.readExcelSheetThroughJenkinsBuildParameters(StepDefinitions.java:52)\n\tat ✽.Given i read a cell from a test data sheet using jenkins Build Parameters(ReadExcelSheet.feature:11)\n",
+  "status": "failed"
 });
 });
