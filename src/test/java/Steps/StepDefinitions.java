@@ -47,7 +47,7 @@ public class StepDefinitions {
 	public void createFoldlerAndWriteToExcel_InsideProject() throws IOException {
 
 		// try to read excel file
-		String projpath = "/Users/sami/eclipse-workspace/JenkinsCucumber/target/ssidrissi/Runs/";
+		String projpath = "/Users/sami/eclipse-workspace/JenkinsCucumber/src/resources/java/ssidrissi/Runs/";
 
 		// create reqresAPI results folder
 		String runsFolderPath = createRunResultFolder(projpath);
