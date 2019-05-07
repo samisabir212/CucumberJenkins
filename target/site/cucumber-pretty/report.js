@@ -1,35 +1,41 @@
-$(document).ready(function() {var formatter = new CucumberHTML.DOMFormatter($('.cucumber-report'));formatter.uri("ReadExcelSheet.feature");
+$(document).ready(function() {var formatter = new CucumberHTML.DOMFormatter($('.cucumber-report'));formatter.uri("CreateResultsFolder.feature");
 formatter.feature({
   "line": 2,
-  "name": "read excel sheet using jenkins",
-  "description": "",
-  "id": "read-excel-sheet-using-jenkins",
+  "name": "create Results folder and write to excel",
+  "description": "\nbasically i want to create a folder, read and write to excel\nbecause im havin issues with Jenkins \nim getting permission denied\nyou will get access denied when you try to access directories in your machine\nbut this time i will try to do it inside the project",
+  "id": "create-results-folder-and-write-to-excel",
   "keyword": "Feature",
   "tags": [
     {
       "line": 1,
-      "name": "@ReadExcel"
+      "name": "@excel"
     }
   ]
 });
 formatter.scenario({
-  "line": 5,
-  "name": "read excel sheet from jenkins and git",
+  "line": 17,
+  "name": "create folder write to excel inside the project",
   "description": "",
-  "id": "read-excel-sheet-using-jenkins;read-excel-sheet-from-jenkins-and-git",
+  "id": "create-results-folder-and-write-to-excel;create-folder-write-to-excel-inside-the-project",
   "type": "scenario",
-  "keyword": "Scenario"
+  "keyword": "Scenario",
+  "tags": [
+    {
+      "line": 16,
+      "name": "@insideProject"
+    }
+  ]
 });
 formatter.step({
-  "line": 7,
-  "name": "i read a cell from a test data sheet",
+  "line": 19,
+  "name": "i create a results folder and write to excel inside project",
   "keyword": "Given "
 });
 formatter.match({
-  "location": "StepDefinitions.readExcelSheetThroughJenkins()"
+  "location": "StepDefinitions.createFoldlerAndWriteToExcel_InsideProject()"
 });
 formatter.result({
-  "duration": 461713388,
+  "duration": 597049131,
   "status": "passed"
 });
 });
