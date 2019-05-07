@@ -858,9 +858,9 @@ public class Lib {
 		}
 	}
 
-	public static XSSFSheet connectexcel() throws IOException {
+	public static XSSFSheet connectexcel(String excelPath) throws IOException {
 
-		File fl = new File("file name");
+		File fl = new File(excelPath);
 		FileInputStream fis = new FileInputStream(fl);
 		XSSFWorkbook wb = new XSSFWorkbook(fis);
 		XSSFSheet sht = wb.getSheetAt(0);
@@ -891,7 +891,7 @@ public class Lib {
 	public static int returnmatchrownum(String Env, String Token, String appl,
 			String Servicename) throws IOException {
 		int i = 0;
-		XSSFSheet sht = connectexcel();
+		XSSFSheet sht = connectexcel("path");
 		for (i = 0; i < sht.getPhysicalNumberOfRows(); i++) {
 			XSSFRow rw = sht.getRow(i);
 			if (returncellvalue(rw, 0).equalsIgnoreCase(Env)
@@ -906,9 +906,9 @@ public class Lib {
 		return i;
 	}
 
-	public static String readexcelvalue(int rownm, int colnm)
+	public static String getexcelvalue(int rownm, int colnm,String excelPath)
 			throws IOException {
-		XSSFSheet sht = connectexcel();
+		XSSFSheet sht = connectexcel(excelPath);
 		XSSFRow rw = sht.getRow(rownm);
 		XSSFCell cell = rw.getCell(colnm);
 

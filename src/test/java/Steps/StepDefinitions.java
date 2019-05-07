@@ -38,6 +38,20 @@ public class StepDefinitions {
 	}
 	
 	
+	
+	@Given("^i read a cell from a test data sheet$")
+	public void readExcelSheetThroughJenkins() throws IOException {
+		
+		
+		String excelFilePath = "/Users/sami/Desktop/Automation/sidrissi/CucumberJenkins/Properties/TestData.xlsx";
+		
+		String value = Lib.readexcelvalue(1, 1,excelFilePath);
+		
+		System.out.println("excelValue : "+ value);
+		
+	}
+	
+	
 	public static String createRunResultFolder(String runsFolderPath) throws IOException {
 
 
