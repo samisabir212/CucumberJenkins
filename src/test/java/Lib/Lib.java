@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.attribute.PosixFilePermission;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -27,6 +28,7 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.TreeMap;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -63,14 +65,91 @@ import io.restassured.response.Response;
 
 public class Lib {
 
-
 	public static String projpath = null;
 	public static String Writepath = null;
 	public static List<HashMap<String, String>> ldapMap = null;
+	static Connection conn;
 
+	static String url = "jdbc:mysql://localhost:3306/AutomationExecutionResults?serverTimezone="
+			+ TimeZone.getDefault().getID();
 	
 	
+	public static void createResultsTable(String username, String password, String tablename) {
+
+		try {
+
+			Connection con = getJDBCconnection(username,password);
+
+			PreparedStatement create = con.prepareStatement("CREATE TABLE " + tablename + "("
+					+ "Date varchar(255), Environment varchar(255), Application varchar(255), AccountStatus varchar(255), "
+					+ "ServiceOrFeatureName varchar(255), TestName varchar(255), Status varchar(255),Comment varchar(255))");
+
+			//Date Enviornment Application Account Status Service Name Test Name Status
+			create.executeUpdate();
+		} catch (Exception e) {
+
+			System.out.println("Exception :" + e);
+
+		}
+
+	}
 	
+	public static void insertIntoResultsTable(String username, String password, String tablename,String date, String env,String app, String accountStatus,
+			String serviceName, String testname, String Status,String comment) throws SQLException {
+		
+		System.out.println(tablename);
+		try {
+			Connection con = getJDBCconnection(username,password);
+			
+			Statement stmt = con.createStatement();		
+			
+			String sql = "INSERT INTO "+tablename+" (Date, Environment, Application, AccountStatus, ServiceOrFeatureName, TestName, Status, Comment)" 
+			
+					+ "VALUES ("+date+"," +env+","+ app+"," +accountStatus+","+serviceName+","+testname+","+Status+","+comment+")";
+			 
+			stmt.executeUpdate(sql);
+		     
+		} catch (Exception e) {
+
+			System.out.println("Exception :" + e);
+
+		}		
+		
+		
+	}
+
+	public static Connection getJDBCconnection(String username, String password) {
+
+		try {
+			
+			 String url = "jdbc:mysql://localhost:3306/AutomationExecutionResults?serverTimezone="
+					+ TimeZone.getDefault().getID();
+
+
+
+			conn = DriverManager.getConnection(url, username, password);
+
+			if (conn != null) {
+
+				System.out.println("connection successful");
+
+			} else {
+
+				System.out.println("connection unsuccessful");
+
+			}
+
+		} catch (SQLException e) {
+
+			System.out.println(e.getMessage());
+			System.out.println("Couldnt connect to DB");
+		}
+
+		return conn;
+	}
+	
+	
+
 	public static String returnxmlvalue(String xml, String key, int i)
 			throws SAXException, IOException, ParserConfigurationException {
 		DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -81,26 +160,25 @@ public class Lib {
 		String value = doc.getElementsByTagName(key).item(i).getTextContent();
 		return value;
 	}
-	
-	public static List<String> returnListOfEnvironmentsToTest(){
+
+	public static List<String> returnListOfEnvironmentsToTest() {
 		List<String> envList = new ArrayList<String>();
-		
+
 		envList.add("SIT");
 		envList.add("DEV");
 		envList.add("FT");
 		envList.add("STAGING");
 		envList.add("PERF");
 
-		
 		return envList;
-		
+
 	}
-		
+
 	public static void generateRandomUsername() {
 		// ~~~~~ make username unique by appendning random string just for testing
 		// purposes so we wont get "User already created error message" ~~~~~
 		String randomString = Lib.generateRandomString();
-		
+
 		Constants.RANDOMUSERNAME = Constants.USERNAME + randomString;
 
 		System.out.println("**********************************");
@@ -108,7 +186,6 @@ public class Lib {
 		System.out.println("random username : " + Constants.RANDOMUSERNAME);
 		System.out.println("**********************************");
 
-		
 	}
 
 	public static String stringvalue(String xml, String key, int i)
@@ -296,7 +373,7 @@ public class Lib {
 
 	public static String createLogFolder(String path) {
 
-		File dir = new File(path+"/Logs");
+		File dir = new File(path + "/Logs");
 
 		System.out.println("creating log folder");
 		dir.mkdir();
@@ -321,8 +398,8 @@ public class Lib {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet sheet = workbook.createSheet("Result");
 		String[] headers = new String[] { "Date", "Enviornment", "Application", "Account Status", "Service Name",
-				"Test Name", "Status","totalValidations","PassedValidations","FailedValidations", "Endpoint", "RC ticket", "Release Number",
-				"Comment"};
+				"Test Name", "Status", "totalValidations", "PassedValidations", "FailedValidations", "Endpoint",
+				"RC ticket", "Release Number", "Comment" };
 
 		// System.out.println("Creating excel");
 
@@ -395,7 +472,7 @@ public class Lib {
 	public static XSSFSheet getExcelResultsSheet(String path) throws IOException {
 
 		File fl = new File(path);
-		
+
 		FileInputStream fis = new FileInputStream(fl);
 		XSSFWorkbook workbook = new XSSFWorkbook(fis);
 		XSSFSheet sht = workbook.getSheetAt(0);
@@ -456,143 +533,139 @@ public class Lib {
 		}
 	}
 
-	public static void mergeExcels(String excelPath1,String excelPath2){
+	public static void mergeExcels(String excelPath1, String excelPath2) {
 		try {
-        			
-            // excel files
-            FileInputStream excellFile1 = new FileInputStream(new File(excelPath1));
-            FileInputStream excellFile2 = new FileInputStream(new File(excelPath2));
 
-            // Create Workbook instance holding reference to .xlsx file
-            XSSFWorkbook workbook1 = new XSSFWorkbook(excellFile1);
-            XSSFWorkbook workbook2 = new XSSFWorkbook(excellFile2);
+			// excel files
+			FileInputStream excellFile1 = new FileInputStream(new File(excelPath1));
+			FileInputStream excellFile2 = new FileInputStream(new File(excelPath2));
 
-            // Get first/desired sheet from the workbook
-            XSSFSheet sheet1 = workbook1.getSheetAt(0);
-            XSSFSheet sheet2 = workbook2.getSheetAt(0);
+			// Create Workbook instance holding reference to .xlsx file
+			XSSFWorkbook workbook1 = new XSSFWorkbook(excellFile1);
+			XSSFWorkbook workbook2 = new XSSFWorkbook(excellFile2);
 
-            // add sheet2 to sheet1
-            addSheet(sheet1, sheet2);
-            excellFile1.close();
+			// Get first/desired sheet from the workbook
+			XSSFSheet sheet1 = workbook1.getSheetAt(0);
+			XSSFSheet sheet2 = workbook2.getSheetAt(0);
 
-            // save merged file
-            File mergedFile = new File(excelPath2);
-            if (!mergedFile.exists()) {
-                mergedFile.createNewFile();
-            }
-            FileOutputStream out = new FileOutputStream(mergedFile);
-            workbook1.write(out);
-            out.close();
-            System.out
-                    .println("Files were merged succussfully");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-		
+			// add sheet2 to sheet1
+			addSheet(sheet1, sheet2);
+			excellFile1.close();
+
+			// save merged file
+			File mergedFile = new File(excelPath2);
+			if (!mergedFile.exists()) {
+				mergedFile.createNewFile();
+			}
+			FileOutputStream out = new FileOutputStream(mergedFile);
+			workbook1.write(out);
+			out.close();
+			System.out.println("Files were merged succussfully");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
-	
+
 	public static void addSheet(XSSFSheet mergedSheet, XSSFSheet sheet) {
-        // map for cell styles
-        Map<Integer, XSSFCellStyle> styleMap = new HashMap<Integer, XSSFCellStyle>();
-        
-        // This parameter is for appending sheet rows to mergedSheet in the end
-        int len = mergedSheet.getLastRowNum();
-        
-        for (int j = sheet.getFirstRowNum(); j <= sheet.getLastRowNum(); j++) {
+		// map for cell styles
+		Map<Integer, XSSFCellStyle> styleMap = new HashMap<Integer, XSSFCellStyle>();
 
-            XSSFRow row = sheet.getRow(j);
-            XSSFRow mrow = mergedSheet.createRow(len + j + 1);
+		// This parameter is for appending sheet rows to mergedSheet in the end
+		int len = mergedSheet.getLastRowNum();
 
-            for (int k = row.getFirstCellNum(); k < row.getLastCellNum(); k++) {
-            	
-                XSSFCell cell = row.getCell(k);
-                XSSFCell mcell = mrow.createCell(k);
+		for (int j = sheet.getFirstRowNum(); j <= sheet.getLastRowNum(); j++) {
 
-                if (cell.getSheet().getWorkbook() == mcell.getSheet()
-                        .getWorkbook()) {
-                    mcell.setCellStyle(cell.getCellStyle());
-                } else {
-                    int stHashCode = cell.getCellStyle().hashCode();
-                    XSSFCellStyle newCellStyle = styleMap.get(stHashCode);
-                    if (newCellStyle == null) {
-                        newCellStyle = mcell.getSheet().getWorkbook()
-                                .createCellStyle();
-                        newCellStyle.cloneStyleFrom(cell.getCellStyle());
-                        styleMap.put(stHashCode, newCellStyle);
-                    }
-                    mcell.setCellStyle(newCellStyle);
-                }
+			XSSFRow row = sheet.getRow(j);
+			XSSFRow mrow = mergedSheet.createRow(len + j + 1);
 
-                switch (cell.getCellType()) {
-                case HSSFCell.CELL_TYPE_FORMULA:
-                    mcell.setCellFormula(cell.getCellFormula());
-                    break;
-                case HSSFCell.CELL_TYPE_NUMERIC:
-                    mcell.setCellValue(cell.getNumericCellValue());
-                    break;
-                case HSSFCell.CELL_TYPE_STRING:
-                    mcell.setCellValue(cell.getStringCellValue());
-                    break;
-                case HSSFCell.CELL_TYPE_BLANK:
-                    mcell.setCellType(HSSFCell.CELL_TYPE_BLANK);
-                    break;
-                case HSSFCell.CELL_TYPE_BOOLEAN:
-                    mcell.setCellValue(cell.getBooleanCellValue());
-                    break;
-                case HSSFCell.CELL_TYPE_ERROR:
-                    mcell.setCellErrorValue(cell.getErrorCellValue());
-                    break;
-                default:
-                    mcell.setCellValue(cell.getStringCellValue());
-                    break;
-                }
-            }
-        }
-	
-}
-	
-	public static String smokeResultFolderCreator_W_Drive(String pathToCheckThenCreateIfDoesntExist){
-			
+			for (int k = row.getFirstCellNum(); k < row.getLastCellNum(); k++) {
+
+				XSSFCell cell = row.getCell(k);
+				XSSFCell mcell = mrow.createCell(k);
+
+				if (cell.getSheet().getWorkbook() == mcell.getSheet().getWorkbook()) {
+					mcell.setCellStyle(cell.getCellStyle());
+				} else {
+					int stHashCode = cell.getCellStyle().hashCode();
+					XSSFCellStyle newCellStyle = styleMap.get(stHashCode);
+					if (newCellStyle == null) {
+						newCellStyle = mcell.getSheet().getWorkbook().createCellStyle();
+						newCellStyle.cloneStyleFrom(cell.getCellStyle());
+						styleMap.put(stHashCode, newCellStyle);
+					}
+					mcell.setCellStyle(newCellStyle);
+				}
+
+				switch (cell.getCellType()) {
+				case HSSFCell.CELL_TYPE_FORMULA:
+					mcell.setCellFormula(cell.getCellFormula());
+					break;
+				case HSSFCell.CELL_TYPE_NUMERIC:
+					mcell.setCellValue(cell.getNumericCellValue());
+					break;
+				case HSSFCell.CELL_TYPE_STRING:
+					mcell.setCellValue(cell.getStringCellValue());
+					break;
+				case HSSFCell.CELL_TYPE_BLANK:
+					mcell.setCellType(HSSFCell.CELL_TYPE_BLANK);
+					break;
+				case HSSFCell.CELL_TYPE_BOOLEAN:
+					mcell.setCellValue(cell.getBooleanCellValue());
+					break;
+				case HSSFCell.CELL_TYPE_ERROR:
+					mcell.setCellErrorValue(cell.getErrorCellValue());
+					break;
+				default:
+					mcell.setCellValue(cell.getStringCellValue());
+					break;
+				}
+			}
+		}
+
+	}
+
+	public static String smokeResultFolderCreator_W_Drive(String pathToCheckThenCreateIfDoesntExist) {
+
 		File f = new File(pathToCheckThenCreateIfDoesntExist);
 		String absolutePath = null;
 		if (f.exists() && f.isDirectory()) {
-		   System.out.println("The Smoke Test Folder with current data already Exists ");
-		}else{
+			System.out.println("The Smoke Test Folder with current data already Exists ");
+		} else {
 			System.out.println("Folder doesnt Exist, Creating folder now.");
-			
+
 			File dir = new File(pathToCheckThenCreateIfDoesntExist);
 			dir.mkdir();
 			// System.out.println("hahha "+dir.getCanonicalPath());
-			 absolutePath = dir.getAbsolutePath();
+			absolutePath = dir.getAbsolutePath();
 
-		} 
-		
+		}
+
 		return absolutePath;
-			
+
 	}
-	
-	public static String createSmokeResultsLogFolderCreator(String pathToCheckThenCreateIfDoesntExist){
-		
+
+	public static String createSmokeResultsLogFolderCreator(String pathToCheckThenCreateIfDoesntExist) {
+
 		File f = new File(pathToCheckThenCreateIfDoesntExist);
 		String absolutePath = null;
 		if (f.exists() && f.isDirectory()) {
-		   System.out.println("The Smoke Test LOG folder already exists ");
-		}else{
+			System.out.println("The Smoke Test LOG folder already exists ");
+		} else {
 			System.out.println("Folder doesnt Exist, Creating folder now.");
-			
+
 			File dir = new File(pathToCheckThenCreateIfDoesntExist);
 			dir.mkdir();
 			// System.out.println("hahha "+dir.getCanonicalPath());
-			 absolutePath = dir.getAbsolutePath();
+			absolutePath = dir.getAbsolutePath();
 
-		} 
-		
+		}
+
 		return absolutePath;
-			
+
 	}
-	
-	public static void copyResults_to_Shared_Drive(String W_DrivePath,
-			String W_Destination) {
+
+	public static void copyResults_to_Shared_Drive(String W_DrivePath, String W_Destination) {
 
 		System.out.println("Lib.Writepath : " + W_DrivePath);
 
@@ -610,7 +683,7 @@ public class Lib {
 		}
 
 	}
-		
+
 	public static HashMap<String, String> returnListOfEnv_HashMap() {
 
 		HashMap<String, String> environmentMap = new HashMap<String, String>();
@@ -623,20 +696,20 @@ public class Lib {
 
 		return environmentMap;
 	}
-		
+
 	public static void createAndWriteHPQCResultColumns(String excelFilePath) {
 
 		XSSFWorkbook workbook = new XSSFWorkbook();
 
 		XSSFSheet sheet = workbook.createSheet("HPQC_RESULTS");
 
-		String[] headers = new String[] { "Tester", "Exec Date", "Exec Time",
-				"Environment", "Test Instance", "Status" };
+		String[] headers = new String[] { "Tester", "Exec Date", "Exec Time", "Environment", "Test Instance",
+				"Status" };
 
 		// System.out.println("Creating excel");
 
 		Row r = sheet.createRow(0);
-		
+
 		for (int rn = 0; rn < headers.length; rn++) {
 
 			r.createCell(rn).setCellValue(headers[rn]);
@@ -657,10 +730,8 @@ public class Lib {
 		}
 
 	}
-	
 
-	public static String readexcelvalue(int rownm, int colnm,
-			String excelResultPath) throws IOException {
+	public static String readexcelvalue(int rownm, int colnm, String excelResultPath) throws IOException {
 		XSSFSheet sht = connectExcelResultsSheet(excelResultPath);
 		XSSFRow rw = sht.getRow(rownm);
 		XSSFCell cell = rw.getCell(colnm);
@@ -672,8 +743,7 @@ public class Lib {
 
 	}
 
-	public static XSSFSheet connectExcelResultsSheet(String excelResultPath)
-			throws IOException {
+	public static XSSFSheet connectExcelResultsSheet(String excelResultPath) throws IOException {
 
 		File fl = new File(excelResultPath);
 
@@ -681,12 +751,11 @@ public class Lib {
 		XSSFWorkbook wb = new XSSFWorkbook(fis);
 		XSSFSheet sht = wb.getSheetAt(0);
 		return sht;
-		
+
 	}
 
-	public static HashMap<String, Integer> returnPassFailResult(String region,
-			String servicename, String status, String excelResultPath)
-			throws IOException {
+	public static HashMap<String, Integer> returnPassFailResult(String region, String servicename, String status,
+			String excelResultPath) throws IOException {
 
 		HashMap<String, Integer> passFailMap = new HashMap<String, Integer>();
 		int Passed = 0;
@@ -719,32 +788,27 @@ public class Lib {
 			throws ParserConfigurationException, SAXException, IOException {
 
 		File xmlFile = new File(xmlPath);
-		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
-				.newInstance();
-		DocumentBuilder documentBuilder = documentBuilderFactory
-				.newDocumentBuilder();
+		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 		Document document = documentBuilder.parse(xmlFile);
 		document.getDocumentElement().normalize();
 
 		return document;
 	}
 
-	public static void writeSourceToXmlFile(String xmlSource,
-			String xmlPathLocation) throws SAXException,
-			ParserConfigurationException, IOException, TransformerException {
+	public static void writeSourceToXmlFile(String xmlSource, String xmlPathLocation)
+			throws SAXException, ParserConfigurationException, IOException, TransformerException {
 
 		// Parse the given input
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document doc = builder.parse(new InputSource(
-				new StringReader(xmlSource)));
-		TransformerFactory transformerFactory = TransformerFactory
-				.newInstance();
+		Document doc = builder.parse(new InputSource(new StringReader(xmlSource)));
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
 		DOMSource source = new DOMSource(doc);
 
-		StreamResult result = new StreamResult(xmlPathLocation); 
-		
+		StreamResult result = new StreamResult(xmlPathLocation);
+
 		transformer.transform(source, result);
 	}
 
@@ -752,7 +816,7 @@ public class Lib {
 
 		File dir = new File(runsFolder);
 		dir.mkdir();
-		
+
 		return dir.getAbsolutePath();
 	}
 
@@ -768,9 +832,8 @@ public class Lib {
 
 	}
 
-	public static void logWriter1(String serviceName, String testname,
-			JSONObject parameter, Map<String, String> headerinfo,
-			String endpoint, Response response, String resultsLogPath)
+	public static void logWriter1(String serviceName, String testname, JSONObject parameter,
+			Map<String, String> headerinfo, String endpoint, Response response, String resultsLogPath)
 			throws FileNotFoundException, IOException {
 
 		// create txt file..
@@ -778,19 +841,18 @@ public class Lib {
 		// System.out.println("Results Log path = " + resultsLogPath);
 
 		System.out.println("*************");
-		System.out.println(resultsLogPath +"\\"+ serviceName);
+		System.out.println(resultsLogPath + "\\" + serviceName);
 		System.out.println("*************");
-		 String currentDate =getcurrentdatenoformat();
+		String currentDate = getcurrentdatenoformat();
 
-		File file = new File(resultsLogPath + "\\" + serviceName, testname+"_"+currentDate+".txt");
+		File file = new File(resultsLogPath + "\\" + serviceName, testname + "_" + currentDate + ".txt");
 		System.out.println(file.toString());
 		file.createNewFile(); // create the file
-		 System.out.println("file created inside " + resultsLogPath + "\\"
-		 + serviceName);
-		 System.out.println("file trying to write to is : "+resultsLogPath + "\\" + serviceName
-				+ "\\"+testname+"_"+currentDate+".txt");
-		PrintWriter out = new PrintWriter(resultsLogPath + "\\" + serviceName
-				+ "\\"+testname+"_"+currentDate+".txt");
+		System.out.println("file created inside " + resultsLogPath + "\\" + serviceName);
+		System.out.println("file trying to write to is : " + resultsLogPath + "\\" + serviceName + "\\" + testname + "_"
+				+ currentDate + ".txt");
+		PrintWriter out = new PrintWriter(
+				resultsLogPath + "\\" + serviceName + "\\" + testname + "_" + currentDate + ".txt");
 		out.println("Request:");
 		out.println("");
 		out.println("Endpoint is :: " + endpoint);
@@ -836,8 +898,7 @@ public class Lib {
 	}
 
 	public static void cleanupexcel(String FILE_NAME)
-			throws EncryptedDocumentException, InvalidFormatException,
-			IOException {
+			throws EncryptedDocumentException, InvalidFormatException, IOException {
 		FileInputStream inp = new FileInputStream(FILE_NAME);
 		Workbook wb = WorkbookFactory.create(inp);
 		Sheet sheet = wb.getSheetAt(0);
@@ -866,7 +927,7 @@ public class Lib {
 		XSSFSheet sht = wb.getSheetAt(0);
 		return sht;
 	}
-	
+
 	public String[] stringDelimiter(String strElements) {
 
 		int element = countOccurance(strElements, "^");
@@ -888,14 +949,12 @@ public class Lib {
 		return strArrElement;
 	}
 
-	public static int returnmatchrownum(String Env, String Token, String appl,
-			String Servicename) throws IOException {
+	public static int returnmatchrownum(String Env, String Token, String appl, String Servicename) throws IOException {
 		int i = 0;
 		XSSFSheet sht = connectexcel("path");
 		for (i = 0; i < sht.getPhysicalNumberOfRows(); i++) {
 			XSSFRow rw = sht.getRow(i);
-			if (returncellvalue(rw, 0).equalsIgnoreCase(Env)
-					&& returncellvalue(rw, 1).equalsIgnoreCase(Token)
+			if (returncellvalue(rw, 0).equalsIgnoreCase(Env) && returncellvalue(rw, 1).equalsIgnoreCase(Token)
 					&& returncellvalue(rw, 2).equalsIgnoreCase(appl)
 					&& returncellvalue(rw, 3).equalsIgnoreCase(Servicename)) {
 				System.out.println("we found matching row number   " + i);
@@ -906,8 +965,7 @@ public class Lib {
 		return i;
 	}
 
-	public static String getexcelvalue(int rownm, int colnm,String excelPath)
-			throws IOException {
+	public static String getexcelvalue(int rownm, int colnm, String excelPath) throws IOException {
 		XSSFSheet sht = connectexcel(excelPath);
 		XSSFRow rw = sht.getRow(rownm);
 		XSSFCell cell = rw.getCell(colnm);
@@ -968,24 +1026,18 @@ public class Lib {
 		}
 	}
 
-	public static void writeExcel1(String date, String Env, String calltype,
-			String app, String sername, String status, String token,
-			String accstatus, String testname, String expRcode,
-			String actRcode, String expScode, String actScode,
-			String statusMsg, String endpoint, String RC, String release)
-			throws IOException {
+	public static void writeExcel1(String date, String Env, String calltype, String app, String sername, String status,
+			String token, String accstatus, String testname, String expRcode, String actRcode, String expScode,
+			String actScode, String statusMsg, String endpoint, String RC, String release) throws IOException {
 
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet sheet = workbook.createSheet("Result");
 		Object[][] datatypes = {
-				{ "Date", "Enviornment", "Call Type/Region", "Application",
-						"Service Name", "Status", "Token", "Account Status",
-						"Test Name", "Exp RCode", "Act RCode", "Exp SCode",
-						"Act SCode", "Status Message", "Endpoint", "RC ticket",
-						"Release Number" },
-				{ date, Env, calltype, app, sername, status, token, accstatus,
-						testname, expRcode, actRcode, expScode, actScode,
-						statusMsg, endpoint, RC, release } };
+				{ "Date", "Enviornment", "Call Type/Region", "Application", "Service Name", "Status", "Token",
+						"Account Status", "Test Name", "Exp RCode", "Act RCode", "Exp SCode", "Act SCode",
+						"Status Message", "Endpoint", "RC ticket", "Release Number" },
+				{ date, Env, calltype, app, sername, status, token, accstatus, testname, expRcode, actRcode, expScode,
+						actScode, statusMsg, endpoint, RC, release } };
 
 		int rowNum = 0;
 		System.out.println("Creating excel");
@@ -1021,11 +1073,9 @@ public class Lib {
 
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet sheet = workbook.createSheet("Result");
-		String[] headers = new String[] { "Date", "Enviornment", "Region",
-				"Application", "Service Name", "Status", "Token",
-				"Account Status", "Test Name", "Exp RCode", "Act RCode",
-				"Exp SCode", "Act SCode", "Status Message", "Endpoint",
-				"RC ticket", "Release Number", "Comment" };
+		String[] headers = new String[] { "Date", "Enviornment", "Region", "Application", "Service Name", "Status",
+				"Token", "Account Status", "Test Name", "Exp RCode", "Act RCode", "Exp SCode", "Act SCode",
+				"Status Message", "Endpoint", "RC ticket", "Release Number", "Comment" };
 
 		// System.out.println("Creating excel");
 
@@ -1050,14 +1100,13 @@ public class Lib {
 		}
 
 	}
-	
+
 	public void connectAccess() throws SQLException, ClassNotFoundException {
 		// Class.forName("sun.jdbc.odbc.JdbcOdbcDriver");
 		// String database =
 		// "jdbc:odbc:Driver={Microsoft Access Driver (*.mdb)};DBQ=result.mdb;";
 
-		Connection conn = DriverManager
-				.getConnection("jdbc:ucanaccess://d:/Result88.mdb;memory=false");
+		Connection conn = DriverManager.getConnection("jdbc:ucanaccess://d:/Result88.mdb;memory=false");
 		// Connection conn = DriverManager.getConnection(database, "", "");
 		Statement s = conn.createStatement();
 
@@ -1075,30 +1124,22 @@ public class Lib {
 	}
 
 	public static String getcurrentdatenoformat() {
-		
+
 		DateFormat dateFormat = new SimpleDateFormat("yyMMddHHmm");
 		Date date = new Date();
 		return dateFormat.format(date);
 	}
 
-	public void createExcelResultAndCreateColumnsForEachEnvironmentFolder(List<String> envList,
-			String testerDirName, String appl) {
+	public void createExcelResultAndCreateColumnsForEachEnvironmentFolder(List<String> envList, String testerDirName,
+			String appl) {
 
 		for (int i = 0; i <= envList.size(); i++) {
 
-			projpath = "D:\\Automation\\" + testerDirName + "\\K2Regression\\"
-					+ appl + "\\" + envList.get(i) + "\\Runs\\";
-
-			
+			projpath = "D:\\Automation\\" + testerDirName + "\\K2Regression\\" + appl + "\\" + envList.get(i)
+					+ "\\Runs\\";
 
 		}
 
 	}
 
-	
-	
-	
-
-	}
-
-
+}
