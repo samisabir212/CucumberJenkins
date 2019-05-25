@@ -5,7 +5,7 @@ import cucumber.api.testng.AbstractTestNGCucumberTests;
 
 
 
-@CucumberOptions(features = "src/resources/java/Features", glue = "Steps", tags = {"@BuildParameters"}, format = {
+@CucumberOptions(features = "src/resources/java/Features", glue = "Steps", tags = {"@insideProject"}, format = {
 		"pretty", "html:target/site/cucumber-pretty" })
 public class CucumberRunner extends AbstractTestNGCucumberTests {
 	
