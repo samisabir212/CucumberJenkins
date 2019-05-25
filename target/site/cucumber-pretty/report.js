@@ -1,41 +1,59 @@
-$(document).ready(function() {var formatter = new CucumberHTML.DOMFormatter($('.cucumber-report'));formatter.uri("CreateResultsFolder.feature");
+$(document).ready(function() {var formatter = new CucumberHTML.DOMFormatter($('.cucumber-report'));formatter.uri("WriteTestResultsToDB.feature");
 formatter.feature({
-  "line": 2,
-  "name": "create Results folder and write to excel",
-  "description": "\nbasically i want to create a folder, read and write to excel\nbecause im havin issues with Jenkins \nim getting permission denied\nyou will get access denied when you try to access directories in your machine\nbut this time i will try to do it inside the project",
-  "id": "create-results-folder-and-write-to-excel",
-  "keyword": "Feature",
-  "tags": [
-    {
-      "line": 1,
-      "name": "@excel"
-    }
-  ]
+  "line": 1,
+  "name": "Create DB, create Table, and write results",
+  "description": "\n\nAs a tester i want to write my results to a database",
+  "id": "create-db,-create-table,-and-write-results",
+  "keyword": "Feature"
 });
 formatter.scenario({
-  "line": 17,
-  "name": "create folder write to excel inside the project",
+  "line": 8,
+  "name": "Connect to DB, Create new table, Write test results to table",
   "description": "",
-  "id": "create-results-folder-and-write-to-excel;create-folder-write-to-excel-inside-the-project",
+  "id": "create-db,-create-table,-and-write-results;connect-to-db,-create-new-table,-write-test-results-to-table",
   "type": "scenario",
   "keyword": "Scenario",
   "tags": [
     {
-      "line": 16,
-      "name": "@insideProject"
+      "line": 7,
+      "name": "@TestDB"
     }
   ]
 });
 formatter.step({
-  "line": 19,
-  "name": "i create a results folder and write to excel inside project",
+  "line": 10,
+  "name": "I connect to a database",
   "keyword": "Given "
 });
+formatter.step({
+  "line": 11,
+  "name": "I create a table",
+  "keyword": "Then "
+});
+formatter.step({
+  "line": 12,
+  "name": "I write my results",
+  "keyword": "Then "
+});
 formatter.match({
-  "location": "StepDefinitions.createFoldlerAndWriteToExcel_InsideProject()"
+  "location": "ConnectToDBCreateTableWriteResultsSteps.connectToDB()"
 });
 formatter.result({
-  "duration": 658271797,
+  "duration": 303402983,
+  "status": "passed"
+});
+formatter.match({
+  "location": "ConnectToDBCreateTableWriteResultsSteps.createTable()"
+});
+formatter.result({
+  "duration": 37481653,
+  "status": "passed"
+});
+formatter.match({
+  "location": "ConnectToDBCreateTableWriteResultsSteps.writeResults()"
+});
+formatter.result({
+  "duration": 17123392,
   "status": "passed"
 });
 });
