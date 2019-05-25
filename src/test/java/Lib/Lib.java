@@ -72,19 +72,52 @@ public class Lib {
 
 	static String url = "jdbc:mysql://localhost:3306/AutomationExecutionResults?serverTimezone="
 			+ TimeZone.getDefault().getID();
+
 	
+
+	public static String getcurrentdateyyMMddHHmm() {
+
+		DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HHmm");
+		Date date = new Date();
+		return dateFormat.format(date).toString();
+
+	}
+
 	
-	public static void createResultsTable(String username, String password, String tablename) {
+	public static void insertIntoResultsTable(String tableName,String date, String env,String app, String accountStatus,
+			String serviceName, String testname, String Status,String Comment) throws SQLException {
+		
+		System.out.println(tableName);
+		try {
+			Connection conn = getJDBCconnection("root", "Friday26");
+			
+			Statement stmt = conn.createStatement();		
+			
+			String sql = "INSERT INTO "+tableName+" (Date, Environment, Application, AccountStatus, ServiceName, TestName, Status,Comment)" 
+			
+					+ "VALUES ("+date+"," +env+","+ app+"," +accountStatus+","+serviceName+","+testname+","+Status+","+Comment+")";
+			 
+			stmt.executeUpdate(sql);
+		     
+		} catch (Exception e) {
+
+			System.out.println("Exception :" + e);
+			System.out.println("Couldnt write new record");
+		}		
+		
+		
+	}
+	
+	public static void createResultsTable(String tablename) {
 
 		try {
 
-			Connection con = getJDBCconnection(username,password);
+			conn = DriverManager.getConnection(url, "root", "Friday26");
 
-			PreparedStatement create = con.prepareStatement("CREATE TABLE " + tablename + "("
-					+ "Date varchar(255), Environment varchar(255), Application varchar(255), AccountStatus varchar(255), "
-					+ "ServiceOrFeatureName varchar(255), TestName varchar(255), Status varchar(255),Comment varchar(255))");
+			PreparedStatement create = conn.prepareStatement("CREATE TABLE " + tablename + "("+ "Date varchar(255), Environment varchar(255), Application varchar(255), AccountStatus varchar(255), "
+					+ "ServiceName varchar(255), TestName varchar(255), Status varchar(255), Comment varchar(255))");
 
-			//Date Enviornment Application Account Status Service Name Test Name Status
+			// Date Enviornment Application Account Status Service Name Test Name Status
 			create.executeUpdate();
 		} catch (Exception e) {
 
@@ -94,38 +127,13 @@ public class Lib {
 
 	}
 	
-	public static void insertIntoResultsTable(String username, String password, String tablename,String date, String env,String app, String accountStatus,
-			String serviceName, String testname, String Status,String comment) throws SQLException {
-		
-		System.out.println(tablename);
-		try {
-			Connection con = getJDBCconnection(username,password);
-			
-			Statement stmt = con.createStatement();		
-			
-			String sql = "INSERT INTO "+tablename+" (Date, Environment, Application, AccountStatus, ServiceOrFeatureName, TestName, Status, Comment)" 
-			
-					+ "VALUES ("+date+"," +env+","+ app+"," +accountStatus+","+serviceName+","+testname+","+Status+","+comment+")";
-			 
-			stmt.executeUpdate(sql);
-		     
-		} catch (Exception e) {
-
-			System.out.println("Exception :" + e);
-
-		}		
-		
-		
-	}
 
 	public static Connection getJDBCconnection(String username, String password) {
 
 		try {
-			
-			 String url = "jdbc:mysql://localhost:3306/AutomationExecutionResults?serverTimezone="
+
+			String url = "jdbc:mysql://localhost:3306/AutomationExecutionResults?serverTimezone="
 					+ TimeZone.getDefault().getID();
-
-
 
 			conn = DriverManager.getConnection(url, username, password);
 
@@ -147,8 +155,6 @@ public class Lib {
 
 		return conn;
 	}
-	
-	
 
 	public static String returnxmlvalue(String xml, String key, int i)
 			throws SAXException, IOException, ParserConfigurationException {
