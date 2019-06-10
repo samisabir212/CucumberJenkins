@@ -1,59 +1,86 @@
-$(document).ready(function() {var formatter = new CucumberHTML.DOMFormatter($('.cucumber-report'));formatter.uri("WriteTestResultsToDB.feature");
+$(document).ready(function() {var formatter = new CucumberHTML.DOMFormatter($('.cucumber-report'));formatter.uri("ReqresAPI/LoginFeature/LoginScenarios.feature");
 formatter.feature({
   "line": 1,
-  "name": "Create DB, create Table, and write results",
-  "description": "\n\nAs a tester i want to write my results to a database",
-  "id": "create-db,-create-table,-and-write-results",
+  "name": "Login Feature",
+  "description": "",
+  "id": "login-feature",
   "keyword": "Feature"
 });
-formatter.scenario({
-  "line": 8,
-  "name": "Connect to DB, Create new table, Write test results to table",
-  "description": "",
-  "id": "create-db,-create-table,-and-write-results;connect-to-db,-create-new-table,-write-test-results-to-table",
-  "type": "scenario",
-  "keyword": "Scenario",
+formatter.scenarioOutline({
+  "line": 6,
+  "name": "Successful Login",
+  "description": "\nuser should be able to successfully login with valid username and password",
+  "id": "login-feature;successful-login",
+  "type": "scenario_outline",
+  "keyword": "Scenario Outline",
   "tags": [
     {
-      "line": 7,
-      "name": "@TestDB"
+      "line": 5,
+      "name": "@login"
     }
   ]
 });
 formatter.step({
   "line": 10,
-  "name": "I connect to a database",
-  "keyword": "Given "
-});
-formatter.step({
-  "line": 11,
-  "name": "I create a table",
+  "name": "Login with valid username and password \"\u003cTestname\u003e\"",
   "keyword": "Then "
 });
-formatter.step({
+formatter.examples({
   "line": 12,
-  "name": "I write my results",
+  "name": "",
+  "description": "",
+  "id": "login-feature;successful-login;",
+  "rows": [
+    {
+      "cells": [
+        "Testname"
+      ],
+      "line": 13,
+      "id": "login-feature;successful-login;;1"
+    },
+    {
+      "cells": [
+        "SuccessfulLogin"
+      ],
+      "line": 14,
+      "id": "login-feature;successful-login;;2"
+    }
+  ],
+  "keyword": "Examples"
+});
+formatter.scenario({
+  "line": 14,
+  "name": "Successful Login",
+  "description": "\nuser should be able to successfully login with valid username and password",
+  "id": "login-feature;successful-login;;2",
+  "type": "scenario",
+  "keyword": "Scenario Outline",
+  "tags": [
+    {
+      "line": 5,
+      "name": "@login"
+    }
+  ]
+});
+formatter.step({
+  "line": 10,
+  "name": "Login with valid username and password \"SuccessfulLogin\"",
+  "matchedColumns": [
+    0
+  ],
   "keyword": "Then "
 });
 formatter.match({
-  "location": "ConnectToDBCreateTableWriteResultsSteps.connectToDB()"
+  "arguments": [
+    {
+      "val": "SuccessfulLogin",
+      "offset": 40
+    }
+  ],
+  "location": "LoginSteps.Login_with_valid_username_and_password(String)"
 });
 formatter.result({
-  "duration": 303402983,
-  "status": "passed"
-});
-formatter.match({
-  "location": "ConnectToDBCreateTableWriteResultsSteps.createTable()"
-});
-formatter.result({
-  "duration": 37481653,
-  "status": "passed"
-});
-formatter.match({
-  "location": "ConnectToDBCreateTableWriteResultsSteps.writeResults()"
-});
-formatter.result({
-  "duration": 17123392,
+  "duration": 2122101531,
   "status": "passed"
 });
 });

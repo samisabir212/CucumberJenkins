@@ -1,9 +1,7 @@
 package Constants;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -16,13 +14,15 @@ import io.restassured.http.Headers;
 import io.restassured.specification.RequestSpecification;
 
 public class Constants {
-	
-	
+
+	// Create object of ExtentReports class- This is main class which will
+	// createreport
+
 	public static String rcTicket = null;
 	public static String releaseNumber = null;
 	public static String companyUsername = null;
 	public static String COMMENT = null;
-	public static String requestBody= null;
+	public static String requestBody = null;
 	public static String RELEASE_NUMBER = null;
 	public static String APPTYPE = null;
 	public static String REGION = null;
@@ -39,18 +39,17 @@ public class Constants {
 	public static String SSN = null;
 	public static String USERNAME = null;
 	public static String PASSWORD = null;
-	
+
 	public static int passed = 0;
 	public static int failed = 0;
-	
+
 	public static String resultsFolder_testOutput = null;
-	
+
 	public static String path;
 	public static String logpath;
 	public static String excelResultsPath = null;
 	public static String resultsFolder = null;
 
-	
 	public static Document document;
 	public static HttpPost httpPost;
 	public static HttpClient httpClient;
@@ -60,23 +59,26 @@ public class Constants {
 	public static String consumer = null;
 	public static String StatusMessage = null;
 	public static HttpResponse httpResponse = null;
-	public static RequestSpecification httpRequest= null;
+	public static RequestSpecification httpRequest = null;
 	public static String requestBodySoap = null;
-
+	public static int actualResponseStatusCode;
 	public static String responseBody = null;
 	public static List<String> failedValidationMessageList = new ArrayList<String>();
 	public static int responseStatusCode;
 	public static int totalValidationCount;
 	public static int passedValidationCount;
 	public static int failedValidationCount;
-	
-	public static String Status = null;
+	public static String actualErrorMessage= null;
+	public static String tStatus = null;
 	public static String comment = null;
 	public static String runResultsFileName = null;
 
 	public static String username_Excel = null;
 	public static String password_Excel = null;
 
+	public static String ExpiredRefreshToken = null;
+	public static String ExpiredAccessToken = null;
+	public static String ExpiredResetKey = null;
 
 	public static String entityBody = null;
 
@@ -91,9 +93,6 @@ public class Constants {
 	public static int expectedResponseStatusCode = 0;
 	public static String expectedResponseMessage = null;
 
-	public static Map<String, String> headersMap = new HashMap<String, String>();
 	public static Headers responseHeaders;
-	public static String actualUIbalance = null;
 
-	
 }
